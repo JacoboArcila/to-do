@@ -6,4 +6,4 @@ const usersFirebase = getCollections("users");
 export const createUser = async (documentTitle, user) => await setDoc(doc(usersFirebase, documentTitle), user);
 
 const tasksFirebase = getCollections("tasksLists");
-export const createTask = async (documentTitle, task) => await setDoc(doc(tasksFirebase, documentTitle), task);
+export const createList = async (documentTitle, task) => await setDoc(doc(tasksFirebase, documentTitle), task);

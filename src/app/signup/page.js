@@ -13,12 +13,11 @@ export default function Signup() {
 	const router = useRouter();
 
 	const signup = async () => {
-		const infoUser = await createUserWithEmailAndPassword(auth, email, password)
+		await createUserWithEmailAndPassword(auth, email, password)
 			.then((userFirebase) => {
-				return userFirebase;
+				return createUser(userFirebase.user.uid, { email: email, name: name, userId: userFirebase.user.uid });
 			})
 			.catch((error) => console.log(error));
-		await createUser(infoUser.user.uid, { email: email, name: name, userId: infoUser.user.uid });
 	};
 
 	return (

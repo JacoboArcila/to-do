@@ -3,6 +3,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "@/app/firebase";
 import { doc, getDoc } from "firebase/firestore";
+
+let currentUserId = null;
+
 export const authOptions = {
 	// Configure one or more authentication providers
 	pages: {
@@ -16,16 +19,20 @@ export const authOptions = {
 				return await signInWithEmailAndPassword(auth, credentials.email || "", credentials.password || "")
 					.then(async (userCredential) => {
 						if (userCredential.user) {
-							const docRef = doc(db, `users/${userCredential.user.uid}`);
+							currentUserId = userCredential.user.uid;
+							const docRef = doc(db, `users/${currentUserId}`);
 							const docSnap = await getDoc(docRef);
 							if (docSnap.exists()) {
 								const user = docSnap.data();
 								console.log(user);
-								const session = {
+
+								// Include additional data in the user object
+								const userWithId = {
 									...user,
-									userId: userCredential.user.uid,
+									userId: currentUserId,
 								};
-								return session;
+
+								return Promise.resolve(userWithId);
 							}
 						}
 						return null;
@@ -42,5 +49,14 @@ export const authOptions = {
 			},
 		}),
 	],
+	callbacks: {
+		// Customize the session object
+		async session({ session }) {
+			// Forward the userId property from the stored variable to the session
+			session.user.userId = currentUserId || null;
+
+			return session;
+		},
+	},
 };
 export default NextAuth(authOptions);

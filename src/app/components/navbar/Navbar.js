@@ -6,7 +6,7 @@ import { GrStar } from "react-icons/gr";
 import { BsListTask } from "react-icons/bs";
 import { MdOutlineHouseSiding } from "react-icons/md";
 import { IoIosArrowForward } from "react-icons/io";
-import { createTask } from "@/app/db/firebaseMethods";
+import { createList } from "@/app/db/firebaseMethods";
 import { v4 as uuidv4 } from "uuid";
 
 const Navbar = ({ info }) => {
@@ -15,9 +15,10 @@ const Navbar = ({ info }) => {
 	const { data: session } = useSession();
 
 	const handleChange = async () => {
-		console.log(session);
 		const id = uuidv4();
-		await createTask(id, { listId: id, title: text });
+		const info = { listId: id, userId: session.user.userId, listName: text };
+		console.log("🚀 ~ file: Navbar.js:22 ~ handleChange ~ info:", info);
+		await createList(id, info);
 	};
 
 	return (
