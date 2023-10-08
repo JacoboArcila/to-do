@@ -3,22 +3,25 @@ import React, { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { ContainerNav, ButtonMenu, InputTask } from "./Navbar.styles";
 import { GrStar } from "react-icons/gr";
-import { BsListTask } from "react-icons/bs";
 import { MdOutlineHouseSiding } from "react-icons/md";
 import { IoIosArrowForward } from "react-icons/io";
 import { createList } from "@/app/db/firebaseMethods";
 import { v4 as uuidv4 } from "uuid";
+import { useQueryClient } from "@tanstack/react-query";
+import TaskList from "../TaskList/TaskList";
 
 const Navbar = ({ info }) => {
+	const queryClient = useQueryClient();
+
 	const [showModal, setShowModal] = useState(false);
 	const [text, setText] = useState("");
 	const { data: session } = useSession();
+	const id = uuidv4();
 
 	const handleChange = async () => {
-		const id = uuidv4();
 		const info = { listId: id, userId: session.user.userId, listName: text };
-		console.log("🚀 ~ file: Navbar.js:22 ~ handleChange ~ info:", info);
 		await createList(id, info);
+		queryClient.invalidateQueries("taskLists");
 	};
 
 	return (
@@ -47,20 +50,7 @@ const Navbar = ({ info }) => {
 				</div>
 			</ButtonMenu>
 			<hr className="linea" />
-			<ButtonMenu>
-				<BsListTask className="icon" color="#5946D2" />
-				<button>Task List</button>
-				<div className="container-arrow">
-					<IoIosArrowForward className="arrow" />
-				</div>
-			</ButtonMenu>
-			<ButtonMenu>
-				<BsListTask className="icon" color="#5946D2" />
-				<button>House List</button>
-				<div className="container-arrow">
-					<IoIosArrowForward className="arrow" />
-				</div>
-			</ButtonMenu>
+			<TaskList />
 			<div className="container-button">
 				<button
 					className="button-logout rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -73,9 +63,7 @@ const Navbar = ({ info }) => {
 					<>
 						<div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
 							<div className="relative w-auto my-6 mx-auto max-w-3xl">
-								{/*content*/}
 								<div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-black outline-none focus:outline-none">
-									{/*header*/}
 									<div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
 										<h3 className="text-3xl font-semibold">Create New List</h3>
 										<button
@@ -87,11 +75,9 @@ const Navbar = ({ info }) => {
 											</span>
 										</button>
 									</div>
-									{/*body*/}
 									<div className="relative p-6 flex-auto">
 										<InputTask type="text" onChange={(e) => setText(e.target.value)} placeholder="Write the title" />
 									</div>
-									{/*footer*/}
 									<div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
 										<button
 											className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"

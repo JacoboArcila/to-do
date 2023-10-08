@@ -9,7 +9,7 @@ export default async function TaskLayout({ children }) {
 		<section>
 			<SessionProvider>
 				<Navbar info={session?.user} />
-				<section style={{ marginLeft: "22%" }}>{children}</section>
+				<section style={{ paddingLeft: "22%", backgroundColor: "#544794", height: "100vh" }}>{children}</section>
 			</SessionProvider>
 		</section>
 	);
