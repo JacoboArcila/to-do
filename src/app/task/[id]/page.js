@@ -2,16 +2,23 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { ContainerTask } from "./task.styles";
-import { currentTask } from "@/app/db/firebaseMethods";
+import { createTask, currentTask } from "@/app/db/firebaseMethods";
 import TaskComponent from "@/app/components/taskComponent/TaskComponent";
 import { AiOutlinePlus } from "react-icons/ai";
 import { TextField } from "@mui/material";
+import { v4 as uuidv4 } from "uuid";
+import "react-toastify/dist/ReactToastify.css";
+import { Toast } from "@/app/utils/Toast";
+import { toast } from "react-toastify";
 
 const page = ({ params }) => {
 	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const [showModal, setShowModal] = useState(false);
+	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const [taskName, setTaskName] = useState("");
+	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const [description, setDescription] = useState("");
+	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const [date, setDate] = useState("");
 	const { id } = params;
 	// eslint-disable-next-line react-hooks/rules-of-hooks
@@ -33,15 +40,31 @@ const page = ({ params }) => {
 		},
 	});
 
+	const idTask = uuidv4();
+
+	const handleCreateTask = async () => {
+		const idtoast = toast.loading("Please wait...", {
+			position: toast.POSITION.BOTTOM_RIGHT,
+		});
+		const info = {
+			taskName: taskName,
+			description: description,
+			completed: false,
+			listId: id,
+			taskId: idTask,
+			date: date,
+		};
+		await createTask(idTask, info);
+		Toast.update(idtoast, "Task created successfully", "success");
+	};
+
 	return (
 		<ContainerTask>
 			<div>
 				<h1 className="list-title">{taskList?.listName}</h1>
 			</div>
 			<div className="list-tasks">
-				{task?.map((item) => (
-					<TaskComponent key={item.taskId} item={item} />
-				))}
+				{task?.length === 0 ? "Add Task" : task?.map((item) => <TaskComponent key={item.taskId} item={item} />)}
 			</div>
 			<div className="add-task">
 				<div className="container-task" onClick={() => setShowModal(true)}>
@@ -97,6 +120,7 @@ const page = ({ params }) => {
 										className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
 										type="button"
 										onClick={() => {
+											handleCreateTask();
 											setShowModal(false);
 										}}
 									>

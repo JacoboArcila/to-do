@@ -4,6 +4,9 @@ import { useState } from "react";
 import { auth } from "../firebase";
 import { createUser } from "../db/firebaseMethods";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Toast } from "../utils/Toast";
 
 export default function Signup() {
 	const [email, setEmail] = useState("");
@@ -13,11 +16,26 @@ export default function Signup() {
 	const router = useRouter();
 
 	const signup = async () => {
+		const id = toast.loading("Please wait...", {
+			position: toast.POSITION.BOTTOM_RIGHT,
+		});
 		await createUserWithEmailAndPassword(auth, email, password)
-			.then((userFirebase) => {
-				return createUser(userFirebase.user.uid, { email: email, name: name, userId: userFirebase.user.uid });
+			.then(async (userFirebase) => {
+				await createUser(userFirebase.user.uid, { email: email, name: name, userId: userFirebase.user.uid })
+					.then(() => {
+						Toast.update(id, "User created successfully", "success");
+					})
+					.catch((err) => {
+						console.log(err);
+						Toast.update(id, "Error creating user, try again", "error");
+					});
 			})
-			.catch((error) => console.log(error));
+			.catch((error) => {
+				if (error.code === "auth/email-already-in-use") {
+					return Toast.update(id, "Email already in use", "error");
+				}
+				Toast.update(id, "Error creating user, try again", error);
+			});
 	};
 
 	return (

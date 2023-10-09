@@ -5,6 +5,7 @@ import { auth, db } from "@/app/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import Cookies from "js-cookie";
 import { setCookie } from "nookies";
+import { Toast } from "@/app/utils/Toast";
 
 let currentUserId = null;
 
@@ -38,7 +39,7 @@ export const authOptions = (req, res) => {
 										...user,
 										userId: currentUserId,
 									};
-
+									Toast.success("Successful login");
 									return Promise.resolve(userWithId);
 								}
 							}
@@ -52,6 +53,7 @@ export const authOptions = (req, res) => {
 							const errorMessage = error.message;
 							console.error(errorCode);
 							console.error(errorMessage);
+							Toast.error("Login error");
 						});
 				},
 			}),

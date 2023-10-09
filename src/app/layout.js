@@ -1,3 +1,4 @@
+import { ToastContainer } from "react-toastify";
 import SessionProvider from "./SessionProvider";
 import TranstackProvider from "./context/TranstackProvider";
 import "./globals.css";
@@ -14,6 +15,7 @@ export default async function RootLayout({ children }) {
 				<TranstackProvider>
 					<SessionProvider>{children}</SessionProvider>
 				</TranstackProvider>
+				<ToastContainer />
 			</body>
 		</html>
 	);

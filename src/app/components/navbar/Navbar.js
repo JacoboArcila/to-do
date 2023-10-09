@@ -9,6 +9,9 @@ import { createList } from "@/app/db/firebaseMethods";
 import { v4 as uuidv4 } from "uuid";
 import { useQueryClient } from "@tanstack/react-query";
 import TaskList from "../TaskList/TaskList";
+import { toast } from "react-toastify";
+import { Toast } from "@/app/utils/Toast";
+import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = ({ info }) => {
 	const queryClient = useQueryClient();
@@ -19,8 +22,13 @@ const Navbar = ({ info }) => {
 	const id = uuidv4();
 
 	const handleChange = async () => {
+		const idtoast = toast.loading("Please wait...", {
+			position: toast.POSITION.BOTTOM_RIGHT,
+		});
 		const info = { listId: id, userId: session.user.userId, listName: text };
+		console.log(info);
 		await createList(id, info);
+		Toast.update(idtoast, "Task List created successfully", "success");
 		queryClient.invalidateQueries("taskLists");
 	};
 

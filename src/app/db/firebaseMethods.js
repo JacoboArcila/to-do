@@ -28,3 +28,5 @@ export const currentTask = async (id) => {
 
 	return data;
 };
+
+export const createTask = async (documentTitle, taskInfo) => await setDoc(doc(task, documentTitle), taskInfo);

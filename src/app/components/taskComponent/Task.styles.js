@@ -9,11 +9,13 @@ export const Task = styled.div`
 	padding: 10px 20px;
 	gap: 20px;
 	margin-right: 30px;
+	margin-bottom: 10px;
 
 	.task-text {
 		.task-title {
 			font-size: 20px;
 			margin-bottom: -5px;
+			width: 500%;
 		}
 
 		.task-date {
