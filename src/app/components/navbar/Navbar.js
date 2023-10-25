@@ -12,9 +12,11 @@ import TaskList from "../TaskList/TaskList";
 import { toast } from "react-toastify";
 import { Toast } from "@/app/utils/Toast";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/navigation";
 
 const Navbar = ({ info }) => {
 	const queryClient = useQueryClient();
+	const router = useRouter();
 
 	const [showModal, setShowModal] = useState(false);
 	const [text, setText] = useState("");
@@ -35,8 +37,8 @@ const Navbar = ({ info }) => {
 	return (
 		<ContainerNav>
 			<div className="profile">
-				<div class="profile-icon relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full">
-					<span class="font-medium text-gray-600 dark:text-black">JA</span>
+				<div className="profile-icon relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full">
+					<span className="font-medium text-gray-600 dark:text-black">JA</span>
 				</div>
 				<div>
 					<h2>{info?.name}</h2>
@@ -52,7 +54,7 @@ const Navbar = ({ info }) => {
 			</ButtonMenu>
 			<ButtonMenu>
 				<MdOutlineHouseSiding className="icon" color="#9373FF" />
-				<button>Tasks</button>
+				<button onClick={() => router.push("/task")}>Tasks</button>
 				<div className="container-arrow">
 					<IoIosArrowForward className="arrow" />
 				</div>

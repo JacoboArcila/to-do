@@ -1,5 +1,5 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { ContainerTask } from "./task.styles";
 import { createTask, currentTask } from "@/app/db/firebaseMethods";
@@ -12,6 +12,8 @@ import { Toast } from "@/app/utils/Toast";
 import { toast } from "react-toastify";
 
 const page = ({ params }) => {
+	// eslint-disable-next-line react-hooks/rules-of-hooks
+	const queryClient = useQueryClient();
 	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const [showModal, setShowModal] = useState(false);
 	// eslint-disable-next-line react-hooks/rules-of-hooks
@@ -53,9 +55,11 @@ const page = ({ params }) => {
 			listId: id,
 			taskId: idTask,
 			date: date,
+			important: false,
 		};
 		await createTask(idTask, info);
 		Toast.update(idtoast, "Task created successfully", "success");
+		queryClient.invalidateQueries("task");
 	};
 
 	return (

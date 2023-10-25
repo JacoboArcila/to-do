@@ -8,6 +8,7 @@ export const ContainerNav = styled.nav`
 	position: fixed;
 	height: 100vh;
 	background-color: #201f24;
+
 	width: 20%;
 
 	.profile {

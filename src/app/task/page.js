@@ -1,12 +1,13 @@
-import { getServerSession } from "next-auth";
 import React from "react";
-import { authOptions } from "../../../pages/api/auth/[...nextauth]";
+import Card from "../components/cardTask/Card";
 
 const page = async () => {
-	const session = await getServerSession(authOptions);
 	return (
 		<div>
-			<h1>Aqui aparecerá el home del usuario {session?.user?.email}</h1>
+			<h1 style={{ fontSize: "40px", paddingTop: "30px" }}>Tasks</h1>
+			<div>
+				<Card />
+			</div>
 		</div>
 	);
 };
